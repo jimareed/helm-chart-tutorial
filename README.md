@@ -1,4 +1,4 @@
-# collection-counter
+# collection-count
 REST API to count collections
 
 ```

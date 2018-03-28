@@ -1,4 +1,4 @@
-SERVICE_NAME := collection-counter
+SERVICE_NAME := collection-count
 DOCKER_IMAGE := jimareed/$(SERVICE_NAME)
 DOCKER_TEST_IMAGE := $(SERVICE_NAME)-test
 VERSION ?= latest
