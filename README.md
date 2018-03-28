@@ -1,4 +1,5 @@
-# basic-service
+# collection-counter
+REST API to count collections
 
 ```
 $docker build .

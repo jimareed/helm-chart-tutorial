@@ -1,4 +1,4 @@
-SERVICE_NAME := basic-service
+SERVICE_NAME := collection-counter
 DOCKER_IMAGE := jimareed/$(SERVICE_NAME)
 DOCKER_TEST_IMAGE := $(SERVICE_NAME)-test
 VERSION ?= latest
