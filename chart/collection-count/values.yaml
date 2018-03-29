@@ -8,7 +8,7 @@
 
 ## locale image.
 ##
-image: collection-count
+image: jimareed/collection-count
 
 ## locale image version.
 ## ref: https://hub.docker.com/r/qlik/locale/tags/
