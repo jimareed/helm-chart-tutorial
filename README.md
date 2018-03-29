@@ -1,5 +1,5 @@
 # collection-count
-REST API to count collections
+REST API to count collections.
 
 ```
 $docker build --tag collection-count .
