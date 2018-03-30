@@ -43,7 +43,7 @@ image:
 
 Install the chart
 ```
-$helm install --name item-count ./chart --set service.type=NodePort
+$helm install --name items ./chart --set service.type=NodePort
 NAME:   item-count
 LAST DEPLOYED: Fri Mar 30 12:51:43 2018
 NAMESPACE: default

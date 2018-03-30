@@ -19,7 +19,7 @@ func count(w http.ResponseWriter, r *http.Request) {
 
 	req, err := http.NewRequest("GET", "http://items-chart/items", nil)
 	if err != nil {
-		io.WriteString(w, "[{\"error\":\"newrequest\"}]\n")
+		io.WriteString(w, "new request error\n")
 		return
 	}
 	client := &http.Client{}
@@ -29,7 +29,7 @@ func count(w http.ResponseWriter, r *http.Request) {
 	// returns an HTTP response
 	resp, err := client.Do(req)
 	if err != nil {
-		io.WriteString(w, "[{\"error\":\"do\"}]\n")
+		io.WriteString(w, "error executing request\n")
 		return
 	}
 
@@ -38,5 +38,5 @@ func count(w http.ResponseWriter, r *http.Request) {
 	// Defer the closing of the body
 	defer resp.Body.Close()
 
-	io.WriteString(w, "[{\"count\":\"1\"}]\n")
+	io.WriteString(w, "{\"count\":\"1\"}\n")
 }
