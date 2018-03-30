@@ -11,6 +11,12 @@ $ curl localhost:8080/v1/collection-count
 $ docker stop <container-id>
 ```
 
+Cleanup images after done
+
+```
+docker system prune -a
+```
+
 ```
 helm create chart
 helm install --dry-run --debug ./chart
@@ -31,6 +37,10 @@ Edit values.yaml
 image:
   repository: jimareed/collection-count
   tag: latest
+
+  service:
+    type: ClusterIP
+    port: 8080  
 ```
 
 ```

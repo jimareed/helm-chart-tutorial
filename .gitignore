@@ -12,3 +12,6 @@
 
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
+
+# No need to store the chart, we will generate it as part of the tutorial
+**/chart

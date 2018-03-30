@@ -5,11 +5,11 @@ import (
 	"net/http"
 )
 
-func stub(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "{\"count\":\"4\"}")
+func test(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "[{\"count\":\"4\"}]")
 }
 
 func main() {
-	http.HandleFunc("/", stub)
+	http.HandleFunc("/test", test)
 	http.ListenAndServe(":8080", nil)
 }
