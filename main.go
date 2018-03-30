@@ -6,7 +6,7 @@ import (
 )
 
 func test(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "[{\"count\":\"4\"}]")
+	io.WriteString(w, "[{\"count\":\"4\"}]\n")
 }
 
 func main() {

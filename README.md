@@ -1,41 +1,29 @@
-# collection-count
-REST API to count collections.
+# helm-chart-tutoral
 
-```
-$docker build --tag collection-count .
-Successfully built xxxx
-Successfully tagged collection-count:latest
-$ docker run -d -p 8080:8080 xxxx
-$ curl localhost:8080/v1/collection-count
-{"count":"4"}
-$ docker stop <container-id>
-```
+A simple tutorial which deploys a simple REST service to kubernetes using helm.  
 
-Cleanup images after done
-
+Try out the service
 ```
-docker system prune -a
+$ docker run -d -p 8080:8080 jimareed/helm-chart-tutorial
+$ curl localhost:8080/test
+[{"count":"4"}]
+$ docker ps
+$ docker stop <container-name>
 ```
 
+Create a helm chart
 ```
-helm create chart
-helm install --dry-run --debug ./chart
-helm install --dry-run --debug ./chart --set service.internalPort=8080
-helm install --name example ./chart --set service.type=NodePort
+$helm create chart
+$ls chart
+Chart.yaml	charts		templates	values.yaml
 ```
-```
-export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services example-chart)
-export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-echo http://$NODE_IP:$NODE_PORT
-http://192.168.65.3:32120
 
-(change to localhost)
-http://localhost:32120/
+Edit chart/values.yaml, set the docker image and change the port
 ```
-Edit values.yaml
-```
+$vi chart/values.yaml
+(make the following changes)
 image:
-  repository: jimareed/collection-count
+  repository: jimareed/helm-chart-tutorial
   tag: latest
 
   service:
@@ -43,6 +31,31 @@ image:
     port: 8080  
 ```
 
+Install the chart
 ```
-helm install --name example2 ./chart --set service.type=NodePort
+$helm install --name item-count ./chart --set service.type=NodePort
+$helm ls
+NAME         	REVISION	UPDATED                 	STATUS  	CHART              	NAMESPACE
+item-count   	1       	Fri Mar 30 12:10:00 2018	DEPLOYED	chart-0.1.0        	default  
+```
+
+Try out the service
+```
+$ kubectl get pods
+NAME                                                      READY     STATUS              RESTARTS   AGE
+item-count-chart-5b99897f5f-k44vm                         0/1       Running             8          16m
+$kubectl port-forward item-count-chart-5b99897f5f-k44vm 8081:8080
+Forwarding from 127.0.0.1:8081 -> 8080
+(from a new terminal session)
+$curl localhost:8081
+[{"count":"4"}]
+```
+
+Clean up after done
+```
+helm delete item-count
+release "item-count" deleted
+$ helm del --purge item-count
+release "item-count" deleted
+$docker system prune -a
 ```
