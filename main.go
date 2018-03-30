@@ -6,18 +6,18 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/test", test)
+	http.HandleFunc("/items", items)
 	http.HandleFunc("/count", count)
 	http.ListenAndServe(":8080", nil)
 }
 
-func test(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "[{\"count\":\"4\"}]\n")
+func items(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "[{\"item\":\"apple\"}, {\"item\":\"orange\"}, {\"item\":\"pear\"}]\n")
 }
 
 func count(w http.ResponseWriter, r *http.Request) {
 
-	req, err := http.NewRequest("GET", "/items", nil)
+	req, err := http.NewRequest("GET", "http://items-chart/items", nil)
 	if err != nil {
 		io.WriteString(w, "[{\"error\":\"newrequest\"}]\n")
 		return
