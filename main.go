@@ -10,6 +10,6 @@ func stub(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/v1/collection-count", stub)
+	http.HandleFunc("/", stub)
 	http.ListenAndServe(":8080", nil)
 }
