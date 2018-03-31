@@ -46,7 +46,7 @@ image:
 
 Install the chart
 ```
-$helm install --name items ./chart --set service.type=NodePort
+$helm install --name items ./chart
 NAME:   items
 LAST DEPLOYED: Fri Mar 30 19:47:30 2018
 NAMESPACE: default
