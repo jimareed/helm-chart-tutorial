@@ -17,7 +17,7 @@ func items(w http.ResponseWriter, r *http.Request) {
 
 func count(w http.ResponseWriter, r *http.Request) {
 
-	req, err := http.NewRequest("GET", "http://10.110.72.208:8080/items", nil)
+	req, err := http.NewRequest("GET", "http://items-chart/items", nil)
 	if err != nil {
 		io.WriteString(w, "new request error\n")
 		return
