@@ -1,7 +1,11 @@
 # helm-chart-tutoral
 
-A simple tutorial which deploys two REST services to kubernetes using helm.  
+Deploy two REST services to kubernetes using helm.  
 ![Docker Compose To Helm](./docker-compose-2-helm.png)
+
+**Prerequisites**: install docker, kubernetes and helm
+
+> Build and run services:
 ```
 $ docker build -t helm-chart-tutorial .
 $ docker-compose up -d
@@ -18,14 +22,7 @@ Removing count ... done
 Removing items ... done
 ```
 
-Prerequisites: install docker, kubernetes and helm
-
-Steps:
-- Create helm charts
-- Install charts
-- Update service
-
-### Create helm charts
+> Create helm charts
 ```
 $helm create chart
 Creating chart
@@ -33,7 +30,7 @@ $ls chart
 Chart.yaml	charts		templates	values.yaml
 ```
 
-Edit chart/values.yaml, set the docker image and change the port
+> Edit chart/values.yaml, set the docker image and change the port
 ```
 $vi chart/values.yaml
 (make the following changes)
@@ -49,7 +46,7 @@ image:
       - items.local
 ```
 
-Install the chart
+> Install the chart
 ```
 $helm install --name items ./chart
 NAME:   items
