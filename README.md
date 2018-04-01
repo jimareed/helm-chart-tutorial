@@ -9,7 +9,7 @@ This tutorial will walk through the following:
 ![Docker Compose To Helm](./tutorial.png)
 
 
-Start with the docker image which contains the two services.
+Build the docker image locally which contains two services.
 ```
 $ docker build -t helm-chart-tutorial .
 ...Successfully tagged helm-chart-tutorial:latest
