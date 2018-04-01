@@ -3,7 +3,6 @@ package main
 import (
 	"io"
 	"net/http"
-	"os"
 )
 
 func main() {
@@ -18,12 +17,12 @@ func items(w http.ResponseWriter, r *http.Request) {
 
 func count(w http.ResponseWriter, r *http.Request) {
 
-	url := os.Getenv("ITEMS_CHART_SERVICE_HOST") + ":8080/items"
+	url := "http://0.0.0.0:8080/items"
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		io.WriteString(w, url)
-		io.WriteString(w, " new request error\n")
+		io.WriteString(w, " connect error")
 		return
 	}
 	client := &http.Client{}

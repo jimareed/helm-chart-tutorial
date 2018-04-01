@@ -1,0 +1,21 @@
+version: "3.3"
+services:
+  items:
+    # replace username/repo:tag with your name and image details
+    image: helm-chart-tutorial
+    container_name: items
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+  count:
+    # replace username/repo:tag with your name and image details
+    image: helm-chart-tutorial
+    container_name: count
+    ports:
+      - "8081:8080"
+    networks:
+      - default
+
+networks:
+    default:

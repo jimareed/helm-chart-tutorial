@@ -1,26 +1,31 @@
 # helm-chart-tutoral
 
-A simple tutorial which deploys a REST service to kubernetes using helm.  
+A simple tutorial which deploys two REST services to kubernetes using helm.  
+![Docker Compose To Helm](./docker-compose-2-helm.png)
+```
+$ docker build -t helm-chart-tutorial .
+$ docker-compose up -d
+Starting items ... done
+Starting count ... done
+$ curl localhost:8080/items
+[{"item":"apple"}, {"item":"orange"}, {"item":"pear"}]
+$ curl localhost:8081/count
+{"count":"3"}
+$ docker-compose down
+Stopping count ... done
+Stopping items ... done
+Removing count ... done
+Removing items ... done
+```
 
 Prerequisites: install docker, kubernetes and helm
 
-Try out the service
-```
-$ docker run -d -p 8080:8080 jimareed/helm-chart-tutorial
-Unable to find image 'jimareed/helm-chart-tutorial:latest' locally
-latest: Pulling from jimareed/helm-chart-tutorial
-...
-Status: Downloaded newer image for jimareed/helm-chart-tutorial:latest
-5c4cd3ea9cd520800e4d914a48e978f2af1a34acbb5e8f1779e8fc571607f3cc
-$ curl localhost:8080/items
-[{"item":"apple"}, {"item":"orange"}, {"item":"pear"}]
-$ docker ps
-CONTAINER ID        IMAGE                                                            COMMAND                  CREATED             STATUS              PORTS                    NAMES
-5c4cd3ea9cd5        jimareed/helm-chart-tutorial                                     "/bin/sh -c collecti…"   55 seconds ago      Up 53 seconds       0.0.0.0:8080->8080/tcp   quirky_spence
-$ docker stop quirky_spence
-```
+Steps:
+- Create helm charts
+- Install charts
+- Update service
 
-Create a helm chart
+### Create helm charts
 ```
 $helm create chart
 Creating chart
