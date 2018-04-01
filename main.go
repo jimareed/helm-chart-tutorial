@@ -1,9 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"io"
+	"io/ioutil"
 	"net/http"
+	"strconv"
 )
+
+// ItemList : list of items
+type ItemList []struct {
+	Item string `json:"item"`
+}
 
 func main() {
 	http.HandleFunc("/items", items)
@@ -16,8 +24,6 @@ func items(w http.ResponseWriter, r *http.Request) {
 }
 
 func count(w http.ResponseWriter, r *http.Request) {
-
-	const kubernetes = false
 
 	url := "http://0.0.0.0:8080/items"
 
@@ -38,5 +44,26 @@ func count(w http.ResponseWriter, r *http.Request) {
 
 	defer resp.Body.Close()
 
-	io.WriteString(w, "{\"count\":\"1\"}\n")
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		io.WriteString(w, url)
+		io.WriteString(w, " error reading response\n")
+		return
+	}
+
+	var i ItemList
+
+	err = json.Unmarshal(body, &i)
+	if err != nil {
+		io.WriteString(w, url)
+		io.WriteString(w, " error reading response\n")
+		return
+	}
+
+	s := strconv.Itoa(len(i))
+
+	io.WriteString(w, "{\"count\":\"")
+	io.WriteString(w, s)
+	io.WriteString(w, "\"}\n")
+
 }

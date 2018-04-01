@@ -1,8 +1,13 @@
 # helm-chart-tutoral
 
-Deploy two REST services to kubernetes using helm.  
+This tutorial will walk through the following:
+- create a helm chart and deploy a local docker image to your kubernetes cluster
+- wire up two services to talk to each other
+
 **Prerequisites**: install docker, kubernetes and helm and clone repo.
+
 ![Docker Compose To Helm](./tutorial.png)
+
 
 Start with the docker image which contains the two services.
 ```
@@ -10,8 +15,8 @@ $ docker build -t helm-chart-tutorial .
 ...Successfully tagged helm-chart-tutorial:latest
 $ docker-compose up -d
 Creating network "helmcharttutorial_default" with the default driver
-Starting items ... done
-Starting count ... done
+Creating items ... done
+Creating count ... done
 $ curl localhost:8080/items
 [{"item":"apple"}, {"item":"orange"}, {"item":"pear"}]
 $ curl localhost:8081/count
@@ -86,7 +91,7 @@ NOTES:
   kubectl port-forward $POD_NAME 8080:80
 
 $ helm install --name count ./count
-NAME:   items
+NAME:   count
 ...
 
 $helm ls
