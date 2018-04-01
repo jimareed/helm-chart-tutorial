@@ -4,7 +4,7 @@ Deploy two REST services to kubernetes using helm.
 **Prerequisites**: install docker, kubernetes and helm and clone repo.
 ![Docker Compose To Helm](./tutorial.png)
 
-Build and run services:
+Start with the docker image which contains the two services.
 ```
 $ docker build -t helm-chart-tutorial .
 ...Successfully tagged helm-chart-tutorial:latest
@@ -48,7 +48,14 @@ image:
     port: 8080  
 
 $vi count/values.yaml
-(repeat changes above)
+(make the following changes)
+image:
+  repository: jimareed/helm-chart-tutorial
+  tag: latest
+
+  service:
+    type: ClusterIP
+    port: 8080  
 ```
 
 Install the charts
