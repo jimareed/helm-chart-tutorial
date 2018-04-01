@@ -17,6 +17,8 @@ func items(w http.ResponseWriter, r *http.Request) {
 
 func count(w http.ResponseWriter, r *http.Request) {
 
+	const kubernetes = false
+
 	url := "http://0.0.0.0:8080/items"
 
 	req, err := http.NewRequest("GET", url, nil)

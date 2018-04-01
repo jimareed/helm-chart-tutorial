@@ -1,14 +1,15 @@
 # helm-chart-tutoral
 
 Deploy two REST services to kubernetes using helm.  
-![Docker Compose To Helm](./docker-compose-2-helm.png)
+**Prerequisites**: install docker, kubernetes and helm and clone repo.
+![Docker Compose To Helm](./tutorial.png)
 
-**Prerequisites**: install docker, kubernetes and helm
-
-> Build and run services:
+Build and run services:
 ```
 $ docker build -t helm-chart-tutorial .
+...Successfully tagged helm-chart-tutorial:latest
 $ docker-compose up -d
+Creating network "helmcharttutorial_default" with the default driver
 Starting items ... done
 Starting count ... done
 $ curl localhost:8080/items
@@ -22,17 +23,21 @@ Removing count ... done
 Removing items ... done
 ```
 
-> Create helm charts
+Create helm charts
 ```
-$helm create chart
-Creating chart
-$ls chart
+$mkdir charts
+$cd charts
+$helm create items
+Creating items
+$helm create count
+Creating count
+$ls items
 Chart.yaml	charts		templates	values.yaml
 ```
 
-> Edit chart/values.yaml, set the docker image and change the port
+Edit values.yaml, set the docker image and change the port
 ```
-$vi chart/values.yaml
+$vi items/values.yaml
 (make the following changes)
 image:
   repository: jimareed/helm-chart-tutorial
@@ -42,60 +47,73 @@ image:
     type: ClusterIP
     port: 8080  
 
-    hosts:
-      - items.local
+$vi count/values.yaml
+(repeat changes above)
 ```
 
-> Install the chart
+Install the charts
 ```
-$helm install --name items ./chart
+$ helm install --name items ./items
 NAME:   items
-LAST DEPLOYED: Fri Mar 30 19:47:30 2018
+LAST DEPLOYED: Sun Apr  1 09:36:21 2018
 NAMESPACE: default
 STATUS: DEPLOYED
 
 RESOURCES:
 ==> v1/Service
-NAME         TYPE      CLUSTER-IP      EXTERNAL-IP  PORT(S)         AGE
-items-chart  NodePort  10.102.252.240  <none>       8080:31555/TCP  0s
+NAME   TYPE       CLUSTER-IP      EXTERNAL-IP  PORT(S)   AGE
+items  ClusterIP  10.104.159.218  <none>       8080/TCP  0s
 
 ==> v1beta2/Deployment
-NAME         DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
-items-chart  1        1        1           0          0s
+NAME   DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
+items  1        1        1           0          0s
 
 ==> v1/Pod(related)
-NAME                          READY  STATUS             RESTARTS  AGE
-items-chart-6f4bbf47cb-4rx8f  0/1    ContainerCreating  0         0s
-
+NAME                    READY  STATUS             RESTARTS  AGE
+items-8694fb7d76-595fx  0/1    ContainerCreating  0         0s
 
 NOTES:
 1. Get the application URL by running these commands:
-  export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services items-chart)
-  export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
+  export POD_NAME=$(kubectl get pods --namespace default -l "app=items,release=items" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl port-forward $POD_NAME 8080:80
+
+$ helm install --name count ./count
+NAME:   items
+...
 
 $helm ls
 NAME         	REVISION	UPDATED                 	STATUS  	CHART              	NAMESPACE
-item-count   	1       	Fri Mar 30 12:10:00 2018	DEPLOYED	chart-0.1.0        	default  
+count        	1       	Sun Apr  1 09:39:07 2018	DEPLOYED	count-0.1.0        	default  
+items        	1       	Sun Apr  1 09:36:21 2018	DEPLOYED	items-0.1.0        	default  
 ```
 
 Try out the service
 ```
 $ kubectl get pods
 NAME                                                      READY     STATUS              RESTARTS   AGE
-items-chart-6f4bbf47cb-4rx8f                              0/1       Running             1          1m
-$ kubectl port-forward items-chart-6f4bbf47cb-4rx8f 8081:8080
+count-77fc7b58c9-7rrb4                                    0/1       Running             3          2m
+items-8694fb7d76-595fx                                    0/1       CrashLoopBackOff    5          5m
+$ kubectl port-forward items-8694fb7d76-595fx 8081:8080
 Forwarding from 127.0.0.1:8081 -> 8080
 (from a new terminal session)
 $curl localhost:8081/items
 [{"item":"apple"}, {"item":"orange"}, {"item":"pear"}]
+$ kubectl port-forward count-77fc7b58c9-7rrb4 8081:8080
+Forwarding from 127.0.0.1:8081 -> 8080
+(from a new terminal session)
+$curl localhost:8081/count
+{"count":"3"}
 ```
 
 Clean up after done
 ```
-helm delete item-count
-release "item-count" deleted
-$ helm del --purge item-count
-release "item-count" deleted
-$docker system prune -a
+$ helm delete items
+release "items" deleted
+$ helm del --purge items
+release "items" deleted
+$ helm delete count
+release "count" deleted
+$ helm del --purge count
+release "count" deleted
 ```
