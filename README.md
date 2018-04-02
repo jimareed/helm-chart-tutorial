@@ -13,14 +13,20 @@ Build the docker image locally which contains two services.
 ```
 $ docker build -t helm-chart-tutorial .
 ...Successfully tagged helm-chart-tutorial:latest
+```
+```
 $ docker-compose up -d
 Creating network "helmcharttutorial_default" with the default driver
 Creating items ... done
 Creating count ... done
+```
+```
 $ curl localhost:8080/items
 [{"item":"apple"}, {"item":"orange"}, {"item":"pear"}]
 $ curl localhost:8081/count
 {"count":"3"}
+```
+```
 $ docker-compose down
 Stopping count ... done
 Stopping items ... done
@@ -51,7 +57,8 @@ image:
   service:
     type: ClusterIP
     port: 8080  
-
+```
+```
 $vi count/values.yaml
 (make the following changes)
 image:
@@ -89,11 +96,14 @@ NOTES:
   export POD_NAME=$(kubectl get pods --namespace default -l "app=items,release=items" -o jsonpath="{.items[0].metadata.name}")
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl port-forward $POD_NAME 8080:80
-
+```
+```
 $ helm install --name count ./count
 NAME:   count
 ...
 
+```
+```
 $helm ls
 NAME         	REVISION	UPDATED                 	STATUS  	CHART              	NAMESPACE
 count        	1       	Sun Apr  1 09:39:07 2018	DEPLOYED	count-0.1.0        	default  
@@ -106,14 +116,24 @@ $ kubectl get pods
 NAME                                                      READY     STATUS              RESTARTS   AGE
 count-77fc7b58c9-7rrb4                                    0/1       Running             3          2m
 items-8694fb7d76-595fx                                    0/1       CrashLoopBackOff    5          5m
+```
+use port forward to access the service
+```
 $ kubectl port-forward items-8694fb7d76-595fx 8081:8080
 Forwarding from 127.0.0.1:8081 -> 8080
-(from a new terminal session)
+```
+open a new termimal session
+```
 $curl localhost:8081/items
 [{"item":"apple"}, {"item":"orange"}, {"item":"pear"}]
+```
+port forward the other service
+```
 $ kubectl port-forward count-77fc7b58c9-7rrb4 8081:8080
 Forwarding from 127.0.0.1:8081 -> 8080
-(from a new terminal session)
+```
+open a new terminal session
+```
 $curl localhost:8081/count
 {"count":"3"}
 ```
