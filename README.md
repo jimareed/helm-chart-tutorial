@@ -9,7 +9,7 @@ This tutorial will walk through the following:
 ![Docker Compose To Helm](./tutorial.png)
 
 
-Build the docker image locally which contains two services.
+Build the docker image locally which contains two services:
 ```
 $ make build-docker
 ./build-docker.sh helm-chart-tutorial latest Dockerfile
@@ -22,7 +22,7 @@ dbfec4c268d3: Pull complete
 ...Successfully built 9bbd346d2575
 Successfully tagged helm-chart-tutorial:latest
 ```
-Try out the services in Docker
+Try out the services in Docker:
 ```
 $ docker-compose up -d
 Creating network "helmcharttutorial_default" with the default driver
@@ -43,7 +43,7 @@ Removing count ... done
 Removing items ... done
 ```
 Now we will create helm charts and deploy to Kubernetes.
-First, create the helm charts
+First, create the helm charts:
 ```
 $mkdir charts
 $cd charts
@@ -55,7 +55,7 @@ $ls items
 Chart.yaml	charts		templates	values.yaml
 ```
 
-Edit values.yaml, set the docker image and change the port
+Edit values.yaml, set the docker image and change the port:
 ```
 $vi items/values.yaml
 (make the following changes)
@@ -79,7 +79,7 @@ image:
     port: 8080  
 ```
 
-Install the charts
+Install the charts:
 ```
 $ helm install --name items ./items
 NAME:   items
@@ -141,14 +141,14 @@ count        	1       	Sun Apr  1 09:39:07 2018	DEPLOYED	count-0.1.0        	def
 items        	1       	Sun Apr  1 09:36:21 2018	DEPLOYED	items-0.1.0        	default  
 ```
 
-Try out the service
+Try out the service:
 ```
 $ kubectl get pods
 NAME                                                      READY     STATUS              RESTARTS   AGE
 count-77fc7b58c9-7rrb4                                    0/1       Running             3          2m
 items-8694fb7d76-595fx                                    0/1       CrashLoopBackOff    5          5m
 ```
-port forward items service to test it
+port forward items service to test it:
 ```
 $ kubectl port-forward items-8694fb7d76-595fx 8080:8080
 Forwarding from 127.0.0.1:8080 -> 8080
@@ -181,6 +181,46 @@ spec:
       env:
         - name: ITEMS_SERVICE_URL
           value: "http://items:8080"
+```
+
+Upgrade the helm release to incorporate the configuration changes:
+```
+$ helm upgrade count ./count
+Release "count" has been upgraded. Happy Helming!
+LAST DEPLOYED: Tue Apr  3 09:21:24 2018
+NAMESPACE: default
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/Service
+NAME   TYPE       CLUSTER-IP     EXTERNAL-IP  PORT(S)   AGE
+count  ClusterIP  10.102.76.224  <none>       8080/TCP  35m
+
+==> v1beta2/Deployment
+NAME   DESIRED  CURRENT  UP-TO-DATE  AVAILABLE  AGE
+count  1        2        1           0          35m
+
+==> v1/Pod(related)
+NAME                    READY  STATUS   RESTARTS  AGE
+count-6cb47ccd9c-wtlwz  0/1    Running  12        35m
+count-7ff6dff965-czwpz  0/1    Pending  0         0s
+
+
+NOTES:
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace default -l "app=count,release=count" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl port-forward $POD_NAME 8080:80
+  ```
+
+Port forward the count service, open a new terminal session and verify that the services are connected:
+**This part doesn't work yet, not sure what I'm doing wrong**
+```
+$ kubectl port-forward count-7ff6dff965-czwpz 8080:8080
+Forwarding from 127.0.0.1:8080 -> 8080
+(from a new terminal session)
+$curl localhost:8080/count
+http://items:8080/items error executing request
 ```
 
 
