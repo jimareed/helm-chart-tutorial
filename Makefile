@@ -1,6 +1,5 @@
 SERVICE_NAME := helm-chart-tutorial
-DOCKER_IMAGE := jimareed/$(SERVICE_NAME)
-DOCKER_TEST_IMAGE := $(SERVICE_NAME)-test
+DOCKER_IMAGE := $(SERVICE_NAME)
 VERSION ?= latest
 
 # Lint the code

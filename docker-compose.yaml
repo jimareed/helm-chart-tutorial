@@ -1,7 +1,6 @@
 version: "3.3"
 services:
   items:
-    # replace username/repo:tag with your name and image details
     image: helm-chart-tutorial
     container_name: items
     ports:
@@ -9,9 +8,10 @@ services:
     networks:
       - default
   count:
-    # replace username/repo:tag with your name and image details
     image: helm-chart-tutorial
     container_name: count
+    environment:
+      - ITEMS_SERVICE_URL=http://0.0.0.0:8080
     ports:
       - "8081:8080"
     networks:

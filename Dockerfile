@@ -11,7 +11,7 @@ ARG VERSION
 ARG REVISION
 
 LABEL org.opencontainers.image.created=$CREATED
-LABEL org.opencontainers.image.url="https://hub.docker.com/r/jimareed/helm-chart-tutorial"
+LABEL org.opencontainers.image.url="helm-chart-tutorial"
 LABEL org.opencontainers.image.source="https://github.com/jimareed/helm-chart-tutorial"
 LABEL org.opencontainers.image.version=$VERSION
 LABEL org.opencontainers.image.revision=$REVISION
