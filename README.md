@@ -79,6 +79,19 @@ image:
     port: 8080  
 ```
 
+Edit deployment.yaml, set the containerPort:
+```
+$vi count/templates/deployment.yaml
+(make the following changes)
+              containerPort: {{ .Values.service.port }}
+```
+```
+$vi items/templates/deployment.yaml
+(make the following changes)
+              containerPort: {{ .Values.service.port }}
+```
+
+
 Install the charts:
 ```
 $ helm install --name items ./items
@@ -144,13 +157,13 @@ items        	1       	Sun Apr  1 09:36:21 2018	DEPLOYED	items-0.1.0        	def
 Try out the service:
 ```
 $ kubectl get pods
-NAME                                                      READY     STATUS              RESTARTS   AGE
-count-77fc7b58c9-7rrb4                                    0/1       Running             3          2m
-items-8694fb7d76-595fx                                    0/1       CrashLoopBackOff    5          5m
+NAME                     READY     STATUS    RESTARTS   AGE
+count-7b96855cd9-dhqbp   1/1       Running   0          7m
+items-7b9ccd5fb8-qwlzg   1/1       Running   0          20m
 ```
 port forward items service to test it:
 ```
-$ kubectl port-forward items-8694fb7d76-595fx 8080:8080
+$ kubectl port-forward items-7b9ccd5fb8-qwlzg 8080:8080
 Forwarding from 127.0.0.1:8080 -> 8080
 ```
 open a new terminal session to try it out:
@@ -160,7 +173,7 @@ $curl localhost:8080/items
 ```
 Now port forward the count service (after stopping the port forward of the items service):
 ```
-$ kubectl port-forward count-77fc7b58c9-7rrb4 8080:8080
+$ kubectl port-forward count-7b96855cd9-dhqbp 8080:8080
 Forwarding from 127.0.0.1:8081 -> 8080
 ```
 open a new terminal session and see that count is failing because we haven't connected the two services yet in Kubernetes:
@@ -180,7 +193,13 @@ spec:
       imagePullPolicy: {{ .Values.image.pullPolicy }}
       env:
         - name: ITEMS_SERVICE_URL
-          value: "http://items:8080"
+          value: "{{ .Values.itemsUrl }}"
+```
+
+```
+$vi count/values.yaml
+(add the following line)
+itemsUrl: http://items:8080
 ```
 
 Upgrade the helm release to incorporate the configuration changes:
@@ -214,24 +233,19 @@ NOTES:
   ```
 
 Port forward the count service, open a new terminal session and verify that the services are connected:
-**This part doesn't work yet, not sure what I'm doing wrong**
 ```
 $ kubectl port-forward count-7ff6dff965-czwpz 8080:8080
 Forwarding from 127.0.0.1:8080 -> 8080
 (from a new terminal session)
 $curl localhost:8080/count
-http://items:8080/items error executing request
+{"count":"3"}
 ```
 
 
 Clean up after done
 ```
-$ helm delete items
-release "items" deleted
 $ helm del --purge items
 release "items" deleted
-$ helm delete count
-release "count" deleted
 $ helm del --purge count
 release "count" deleted
 ```

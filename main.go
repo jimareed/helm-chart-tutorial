@@ -17,6 +17,7 @@ type ItemList []struct {
 func main() {
 	http.HandleFunc("/items", items)
 	http.HandleFunc("/count", count)
+	http.HandleFunc("/", health)
 	http.HandleFunc("/health", health)
 	http.ListenAndServe(":8080", nil)
 }
