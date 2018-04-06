@@ -4,7 +4,7 @@ services:
     image: helm-chart-tutorial
     container_name: items
     ports:
-      - "8080:8080"
+      - "8081:8080"
     networks:
       - default
   count:
@@ -13,7 +13,7 @@ services:
     environment:
       - ITEMS_SERVICE_URL=http://0.0.0.0:8080
     ports:
-      - "8081:8080"
+      - "8082:8080"
     networks:
       - default
 

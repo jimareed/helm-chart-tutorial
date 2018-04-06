@@ -1,15 +1,16 @@
 # helm-chart-tutorial
 
 This tutorial will walk through the following:
-- create a helm chart and deploy a local docker image to your kubernetes cluster
+- create a helm chart and deploy a local docker image to your Kubernetes cluster
 - wire up two services to talk to each other
 
-**Prerequisites**: install docker, kubernetes and helm and clone repo.
+**Prerequisites**: install docker, Kubernetes and helm and clone repo.
 
 ![Docker Compose To Helm](./tutorial.png)
 
+Developing and testing a microservice doesn't require Kubernetes.  A lot of developers are using docker-compose to setup a simple docker development environment.  This tutorial starts at the point where you have completed development of your microservice and now you want integrate and test it with other services in Kubernetes.  Here are the steps to build, test and deploy two services (that talk to each other) in Kubernetes using Helm.
 
-Build the docker image locally which contains two services:
+Start by building the docker image locally which contains two services:
 ```
 $ make build-docker
 ./build-docker.sh helm-chart-tutorial latest Dockerfile
@@ -30,9 +31,9 @@ Creating items ... done
 Creating count ... done
 ```
 ```
-$ curl localhost:8080/items
+$ curl localhost:8081/items
 [{"item":"apple"}, {"item":"orange"}, {"item":"pear"}]
-$ curl localhost:8081/count
+$ curl localhost:8082/count
 {"count":"3"}
 ```
 ```
@@ -163,22 +164,22 @@ items-7b9ccd5fb8-qwlzg   1/1       Running   0          20m
 ```
 port forward items service to test it:
 ```
-$ kubectl port-forward items-7b9ccd5fb8-qwlzg 8080:8080
-Forwarding from 127.0.0.1:8080 -> 8080
+$ kubectl port-forward items-7b9ccd5fb8-qwlzg 8081:8080
+Forwarding from 127.0.0.1:8081 -> 8080
 ```
 open a new terminal session to try it out:
 ```
-$curl localhost:8080/items
+$curl localhost:8081/items
 [{"item":"apple"}, {"item":"orange"}, {"item":"pear"}]
 ```
 Now port forward the count service (after stopping the port forward of the items service):
 ```
-$ kubectl port-forward count-7b96855cd9-dhqbp 8080:8080
-Forwarding from 127.0.0.1:8081 -> 8080
+$ kubectl port-forward count-7b96855cd9-dhqbp 8082:8080
+Forwarding from 127.0.0.1:8082 -> 8080
 ```
 open a new terminal session and see that count is failing because we haven't connected the two services yet in Kubernetes:
 ```
-$curl localhost:8080/count
+$curl localhost:8082/count
 /items error executing request
 ```
 
@@ -195,7 +196,7 @@ spec:
         - name: ITEMS_SERVICE_URL
           value: "{{ .Values.itemsUrl }}"
 ```
-
+Add itemsUrl to values.yaml.  Since the count service is running inside the Kubernetes cluster we can use the service name to lookup the host.
 ```
 $vi count/values.yaml
 (add the following line)
@@ -234,10 +235,10 @@ NOTES:
 
 Port forward the count service, open a new terminal session and verify that the services are connected:
 ```
-$ kubectl port-forward count-7ff6dff965-czwpz 8080:8080
-Forwarding from 127.0.0.1:8080 -> 8080
+$ kubectl port-forward count-7ff6dff965-czwpz 8082:8080
+Forwarding from 127.0.0.1:8082 -> 8080
 (from a new terminal session)
-$curl localhost:8080/count
+$curl localhost:8082/count
 {"count":"3"}
 ```
 
