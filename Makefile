@@ -1,10 +1,7 @@
-SERVICE_NAME := helm-chart-tutorial
-DOCKER_IMAGE := $(SERVICE_NAME)
+DOCKER_REGISTRY := williamchanrico
+SERVICE_NAME := items-count-app
+DOCKER_IMAGE := $(DOCKER_REGISTRY)/$(SERVICE_NAME)
 VERSION ?= latest
-
-# Lint the code
-#lint:
-#	./scripts/lint.sh
 
 # Compile Go packages and dependencies
 build:
